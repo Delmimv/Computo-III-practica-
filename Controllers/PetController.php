@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pet;
+use App\Models\Owner;
 
 class PetController extends Controller
 {
@@ -14,7 +15,8 @@ class PetController extends Controller
     {
         //
         $data['pets'] = Pet::all();
-        return view('pet.index', $data);
+        return view('pet.index', compact('pets'))
+        ->with('i', (request()->input('page',1)-1)) * $pets->perPage())
     }
 
     /**
@@ -23,8 +25,8 @@ class PetController extends Controller
     public function create()
     {
         //
-        $owners=Owner::all();
-        return view('pet.create', compact ('owners'));
+        $owners = Owner::all();
+        return view('pet.create', compact('owners' ));
     }
 
     /**
@@ -32,6 +34,11 @@ class PetController extends Controller
      */
     public function store(Request $request)
     {
+
+        //validacion
+        request()->valited(pet::$rules);
+
+        
         //recepcionar todos los datos
         $petData = request()->except("_token");
         Pet::insert($petData);
@@ -44,6 +51,8 @@ class PetController extends Controller
     public function show(string $id)
     {
         //
+        $pet= pet::find($id);
+        return view('pet.show', compact('pet'));
     }
 
     /**
@@ -54,7 +63,7 @@ class PetController extends Controller
         //recuperar los datos
         $pet=Pet::findOrFail($id);
         $owners=Owner::all();
-        return view('pet.edit', compact('pet', 'owner'));
+        return view('pet.edit', compact('pet','owners'));
     }
 
     /**

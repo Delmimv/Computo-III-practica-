@@ -8,9 +8,20 @@ use Illuminate\Database\Eloquent\Model;
 class Pet extends Model
 {
     use HasFactory;
-    //registro de que existe una relacionen la laravel. Se registra en el archibo que representa la tabla*/
 
+    static $rules = {
+        'name' => 'required|string|min:3',
+        'age' => 'requited|integer|min:1',
+        'wight_kg' => 'required|min:1',
+        'owner_id' => 'required|min1',
+    };
+
+    protected $petPage = 5;
+
+    /*registro de que existe una relacion
+    en laravel. Se registra en el archivo que
+    representa la tabla */
     public function owner(){
-        return $this->belongsTo(owner::class);
+        return $this->belongsTo(Owner::class);                 
     }
 }
